@@ -1,9 +1,9 @@
-import React, {useCallback} from 'react';
-import {gql, useMutation, useQuery} from '@apollo/client';
+import React, { useCallback } from 'react';
+import { gql, useMutation, useQuery } from '@apollo/client';
 import styled from 'styled-components';
 
 import { QuizItem } from './QuizItem';
-import {useUser} from "../providers/Auth";
+import { useUser } from '../providers/Auth';
 
 const QuizContainer = styled.div`
     margin: 24px 0;
@@ -22,7 +22,7 @@ const QuizContainer = styled.div`
 
 export const Quiz = ({ id }) => {
     const userId = useUser()?.id;
-    const { data, refetch} = useQuery(
+    const { data, refetch } = useQuery(
         gql`
             query Quiz($id: ID!, $userId: ID!) {
                 quizById(id: $id) {
@@ -46,19 +46,17 @@ export const Quiz = ({ id }) => {
         }
     );
     const markQuestionComplete = useMarkQuestionComplete();
-
     const onSelect = async (id) => {
         //pretty simplistic approach to marking a question complete, but i wanted to keep it simple and have
         //some sort of interaction that works
         await markQuestionComplete(id);
-        refetch()
+        refetch();
     };
     return (
         <QuizContainer id="quiz">
             <h2>{data?.quizById.title}</h2>
             <div>
                 {data?.quizById.questions.map((question, idx) => (
-
                     <QuizItem
                         key={question.id}
                         selected={!!question.progress?.completedTimestamp}
@@ -82,18 +80,20 @@ function useMarkQuestionComplete() {
             }
         }
     `);
-    return useCallback(async (questionId: string) => {
-        try {
-            const input = {
-                userId,
-                contentId: questionId,
-                completedTimestamp: new Date().valueOf(),
-            };
-            await markQuestionComplete({ variables: { input } });
-        } catch (e) {
-            console.log(e);
-            throw e;
-        }
-    }, [markQuestionComplete, userId,]);
-
+    return useCallback(
+        async (questionId: string) => {
+            try {
+                const input = {
+                    userId,
+                    contentId: questionId,
+                    completedTimestamp: new Date().valueOf(),
+                };
+                await markQuestionComplete({ variables: { input } });
+            } catch (e) {
+                console.log(e);
+                throw e;
+            }
+        },
+        [markQuestionComplete, userId]
+    );
 }

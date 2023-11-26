@@ -1,8 +1,8 @@
 import React from 'react';
-import { useQuery, gql } from '@apollo/client';
+import { gql, useQuery } from '@apollo/client';
 import styled from 'styled-components';
 import { CheckCircle } from '@phosphor-icons/react';
-import {useUser} from "../providers/Auth";
+import { useUser } from '../providers/Auth';
 
 const AsideWrapper = styled.aside`
     width: 100%;
@@ -64,13 +64,16 @@ const formatter = new Intl.DateTimeFormat('en-US', {
 });
 
 export const Aside = ({ id, children }) => {
-   const { data, loading, error } = useActivityData(id);
+    const { data, loading, error } = useActivityData(id);
     return (
         <AsideWrapper>
             {!loading && !error && data?.userProgress.completedTimestamp && (
                 <ActivityBar>
                     <CheckCircle weight="bold" color="#0c0c0e" size={24} />
-                    Completed on {formatter.format(new Date(data.userProgress.completedTimestamp))}
+                    Completed on{' '}
+                    {formatter.format(
+                        new Date(data.userProgress.completedTimestamp)
+                    )}
                 </ActivityBar>
             )}
             {children}
@@ -94,7 +97,7 @@ function useActivityData(contentId: string) {
             variables: {
                 userId,
                 contentId,
-            }
+            },
         }
     );
     return {

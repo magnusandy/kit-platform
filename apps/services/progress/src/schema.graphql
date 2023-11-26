@@ -1,8 +1,8 @@
 extend schema
-    @link(
-        url: "https://specs.apollo.dev/federation/v2.3"
-        import: ["@key", "@interfaceObject"]
-    )
+@link(
+    url: "https://specs.apollo.dev/federation/v2.3"
+    import: ["@key", "@interfaceObject"]
+)
 
 type Query {
     userProgress(userId: ID!, contentId: ID!): UserProgressData!
