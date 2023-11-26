@@ -18,6 +18,12 @@ export const quizzes = [
                 answerText:
                     'It depends on the roast, but aim for 36--45 grams.',
             },
+            {
+                id: '3',
+                questionText:
+                    'What is the ideal length of time for a shot of espresso to pour?',
+                answerText: 'Aim for 20-30 seconds.',
+            },
         ],
     },
 ];
