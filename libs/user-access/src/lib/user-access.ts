@@ -3,6 +3,16 @@ import { InvalidLoginError, LoginResponse } from './types';
 // But just to be clear... we would _never_ in real life 😉
 const ACCOUNTS = new Map([
     [
+        'magnusandy@gmail.com',
+        {
+            id: 1,
+            username: 'magnusandy@gmail.com',
+            password: 'password123',
+            firstName: 'Andrew',
+            lastName: 'Magnus',
+        },
+    ],
+    [
         'mubatt@wyopub.com',
         {
             id: 313,
@@ -57,4 +67,33 @@ export async function login(
     }
 
     throw new InvalidLoginError('Invalid username or password');
+}
+
+/**
+ * Verify that the given token is valid.
+ * possibly by checking with a third-party service.
+ * you could also use this function to extract the user id from the token
+ */
+export async function verifyToken(token: string | null): Promise<boolean> {
+    return true;
+}
+
+/**
+ * Verify that the given token is valid and that the user has access to the given content.
+ * in particular we would probably want to ensure that the user thats logged in with the token is the same
+ * as the user whos progress is being requested
+ * @param token
+ * @param userId
+ */
+export async function verifyAccessToProgress(
+    token: string | null,
+    userId: string
+): Promise<boolean> {
+    const validToken = await verifyToken(token);
+    if (!validToken) {
+        return false;
+    } else {
+        //actually verify that the user id matches the user id in the token
+        return userId === userId;
+    }
 }
