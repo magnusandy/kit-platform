@@ -1,4 +1,8 @@
-import { UserProgressData, UserProgressRepository } from '../lib/progress';
+import {
+    UserProgressData,
+    UserProgressId,
+    UserProgressRepository,
+} from '../lib/progress';
 import { Brackets, Column, DataSource, Entity, PrimaryColumn } from 'typeorm';
 
 @Entity()
@@ -36,7 +40,7 @@ export class ProgressPostgresRepository implements UserProgressRepository {
      * OR ... rest of ids
      * @param ids
      */
-    async loadByIds(ids: UserProgressData[]): Promise<UserProgressData[]> {
+    async loadByIds(ids: UserProgressId[]): Promise<UserProgressData[]> {
         return this.datasource
             .getRepository(UserProgressRecord)
             .createQueryBuilder('userProgress')
