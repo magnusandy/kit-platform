@@ -5,9 +5,8 @@ export class UserProgressData {
         public readonly contentId: string,
         public readonly progressPercentInt: number,
         public readonly completedDate: Date | undefined,
-        public readonly isBookmarked: boolean,
-    ) {
-    }
+        public readonly isBookmarked: boolean
+    ) {}
 
     public static empty(userId: string, contentId: string): UserProgressData {
         return new UserProgressData(userId, contentId, 0, undefined, false);
@@ -18,9 +17,11 @@ export class UserProgressData {
     }
 }
 
-export type UserProgressId = Pick<UserProgressData, 'userId' | "contentId">;
+export type UserProgressId = Pick<UserProgressData, 'userId' | 'contentId'>;
 
-export type UserProgressDataUpdates = Partial<Omit<UserProgressData, "userId" | "contentId">>;
+export type UserProgressDataUpdates = Partial<
+    Omit<UserProgressData, 'userId' | 'contentId'>
+>;
 
 //utilizing interfaces allows for easier testing and mocking in tests
 export interface UserProgressRepository {
@@ -32,8 +33,7 @@ export interface UserProgressRepository {
 export class UserProgressService {
     constructor(
         private readonly userProgressRepository: UserProgressRepository
-    ) {
-    }
+    ) {}
 
     /**
      * allowing here for partial updates because it makes the front end easier
@@ -42,15 +42,21 @@ export class UserProgressService {
      * @param id
      * @param updates
      */
-    async save(id: UserProgressId, updates: UserProgressDataUpdates): Promise<UserProgressData> {
+    async save(
+        id: UserProgressId,
+        updates: UserProgressDataUpdates
+    ): Promise<UserProgressData> {
         const existing = await this.loadByIds([id]);
-        const firstOrEmpty = existing.length > 0 ? existing[0] : UserProgressData.empty(id.userId, id.contentId);
+        const firstOrEmpty =
+            existing.length > 0
+                ? existing[0]
+                : UserProgressData.empty(id.userId, id.contentId);
         const merged = new UserProgressData(
             firstOrEmpty.userId,
             firstOrEmpty.contentId,
             updates.progressPercentInt ?? firstOrEmpty.progressPercentInt,
             updates.completedDate ?? firstOrEmpty.completedDate,
-            updates.isBookmarked ?? firstOrEmpty.isBookmarked,
+            updates.isBookmarked ?? firstOrEmpty.isBookmarked
         );
         await this.userProgressRepository.save(merged);
         return merged;
@@ -59,7 +65,4 @@ export class UserProgressService {
     async loadByIds(ids: UserProgressId[]): Promise<UserProgressData[]> {
         return await this.userProgressRepository.loadByIds(ids);
     }
-
-
 }
-
