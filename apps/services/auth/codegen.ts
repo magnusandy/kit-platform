@@ -1,16 +1,8 @@
-import type { CodegenConfig } from '@graphql-codegen/cli';
+import { codegenConfig } from '../../../tools/graphql.codegen';
 
-const config: CodegenConfig = {
-    overwrite: true,
-    schema: 'apps/services/auth/src/schema.graphql',
-    generates: {
-        'apps/services/auth/src/generated/graphqlTypes.ts': {
-            plugins: ['typescript', 'typescript-resolvers'],
-        },
-        'apps/services/auth/graphql.schema.json': {
-            plugins: ['introspection'],
-        },
-    },
-};
+const config = codegenConfig(
+    `${__dirname}/src/schema.graphql`,
+    `${__dirname}/src/generated/graphqlTypes.ts`
+);
 
 export default config;
