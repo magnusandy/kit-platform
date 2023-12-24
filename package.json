@@ -10,8 +10,7 @@
         "lint": "nx run-many --target=lint --all",
         "test": "nx run-many --target=test --all --output-style=static --detectOpenHandles",
         "test:coverage": "nx run-many --target=test --all --output-style=static  --codeCoverage=true --coverageReporters=text,html",
-        "start:db": "docker-compose -f database-compose.yml up -d",
-        "codegen": "graphql-codegen --config apps/services/progress/codegen.ts"
+        "start:db": "docker-compose -f database-compose.yml up -d"
     },
     "private": true,
     "devDependencies": {
