@@ -3,6 +3,7 @@ import { gql, useQuery } from '@apollo/client';
 import styled from 'styled-components';
 import { CheckCircle } from '@phosphor-icons/react';
 import { useUser } from '../providers/Auth';
+import { GetDataQuery, GetDataQueryVariables } from '../__generated__/graphql';
 
 const AsideWrapper = styled.aside`
     width: 100%;
@@ -83,7 +84,10 @@ export const Aside = ({ id, children }) => {
 
 function useActivityData(contentId: string) {
     const userId = useUser()?.id;
-    const { data, error, loading } = useQuery(
+    const { data, error, loading } = useQuery<
+        GetDataQuery,
+        GetDataQueryVariables
+    >(
         gql`
             query GetData($userId: ID!, $contentId: ID!) {
                 userProgress(userId: $userId, contentId: $contentId) {

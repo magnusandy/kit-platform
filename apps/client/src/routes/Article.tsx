@@ -1,11 +1,12 @@
 import React from 'react';
-import { useQuery, gql } from '@apollo/client';
-import { useParams, useLocation } from 'react-router-dom';
+import { gql, useQuery } from '@apollo/client';
+import { useLocation, useParams } from 'react-router-dom';
 import { Wrapper } from '../components/Wrapper';
 import styled from 'styled-components';
 import { Aside } from '../components/Aside';
 import { Columns } from '../components/Columns';
 import { Quiz } from '../components/Quiz';
+import { ArticleQuery, ArticleQueryVariables } from '../__generated__/graphql';
 
 const ArticleWrapper = styled.article`
     h1 {
@@ -39,7 +40,7 @@ const HeroImage = styled.img`
 export const Article = () => {
     const params = useParams<{ slug: string }>();
     const location = useLocation();
-    const { data } = useQuery(
+    const { data } = useQuery<ArticleQuery, ArticleQueryVariables>(
         gql`
             query Article($slug: String) {
                 article(slug: $slug) {

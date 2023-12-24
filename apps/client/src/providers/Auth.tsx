@@ -1,5 +1,9 @@
-import React, { useState, useContext } from 'react';
-import { useMutation, gql, ApolloError } from '@apollo/client';
+import React, { useContext, useState } from 'react';
+import { ApolloError, gql, useMutation } from '@apollo/client';
+import {
+    LoginMutation,
+    LoginMutationVariables,
+} from '../__generated__/graphql';
 
 type AuthContextType = {
     accessToken: string;
@@ -75,7 +79,10 @@ export const useLogin = (): [
     }
 ] => {
     const { setUser } = useContext(AuthContext);
-    const [mutate, { data, loading, error }] = useMutation(gql`
+    const [mutate, { data, loading, error }] = useMutation<
+        LoginMutation,
+        LoginMutationVariables
+    >(gql`
         mutation Login($username: String!, $password: String!) {
             login(username: $username, password: $password) {
                 accessToken

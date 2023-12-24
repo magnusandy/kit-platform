@@ -5,8 +5,8 @@ import { gql, useQuery } from '@apollo/client';
 import { Wrapper } from '../components/Wrapper';
 import { Columns } from '../components/Columns';
 import { Aside } from '../components/Aside';
-import { QuizItem } from '../components/QuizItem';
 import { Quiz } from '../components/Quiz';
+import { VideoQuery, VideoQueryVariables } from '../__generated__/graphql';
 
 const Frame = styled.iframe`
     width: 100%;
@@ -22,7 +22,7 @@ const Meta = styled.div`
 export const Video = () => {
     const params = useParams();
     const location = useLocation();
-    const { data } = useQuery(
+    const { data } = useQuery<VideoQuery, VideoQueryVariables>(
         gql`
             query Video($slug: String) {
                 video(slug: $slug) {

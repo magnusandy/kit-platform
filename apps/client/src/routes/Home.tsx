@@ -1,9 +1,13 @@
 import React from 'react';
-import { useQuery, gql } from '@apollo/client';
+import { gql, useQuery } from '@apollo/client';
 import styled from 'styled-components';
 
 import { Wrapper } from '../components/Wrapper';
 import { Card } from '../components/Card';
+import {
+    AllContentQuery,
+    AllContentQueryVariables,
+} from '../__generated__/graphql';
 
 const Grid = styled.div`
     display: grid;
@@ -13,7 +17,10 @@ const Grid = styled.div`
 `;
 
 export const Home = () => {
-    const { data, loading } = useQuery(gql`
+    const { data, loading } = useQuery<
+        AllContentQuery,
+        AllContentQueryVariables
+    >(gql`
         query AllContent {
             articles {
                 id

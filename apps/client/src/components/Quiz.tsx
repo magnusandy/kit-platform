@@ -4,6 +4,12 @@ import styled from 'styled-components';
 
 import { QuizItem } from './QuizItem';
 import { useUser } from '../providers/Auth';
+import {
+    MarkQuestionCompleteMutation,
+    MarkQuestionCompleteMutationVariables,
+    QuizQuery,
+    QuizQueryVariables,
+} from '../__generated__/graphql';
 
 const QuizContainer = styled.div`
     margin: 24px 0;
@@ -22,7 +28,7 @@ const QuizContainer = styled.div`
 
 export const Quiz = ({ id }) => {
     const userId = useUser()?.id;
-    const { data, refetch } = useQuery(
+    const { data, refetch } = useQuery<QuizQuery, QuizQueryVariables>(
         gql`
             query Quiz($id: ID!, $userId: ID!) {
                 quizById(id: $id) {
@@ -73,7 +79,10 @@ export const Quiz = ({ id }) => {
 
 function useMarkQuestionComplete() {
     const userId = useUser()?.id;
-    const [markQuestionComplete] = useMutation(gql`
+    const [markQuestionComplete] = useMutation<
+        MarkQuestionCompleteMutation,
+        MarkQuestionCompleteMutationVariables
+    >(gql`
         mutation MarkQuestionComplete($input: UpdateProgressInput!) {
             saveProgress(input: $input) {
                 completedTimestamp

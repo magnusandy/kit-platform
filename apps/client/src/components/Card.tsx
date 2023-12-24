@@ -39,8 +39,8 @@ export const Card = ({
     description = '',
 }: {
     title: string;
-    image: string;
-    slug: string;
+    image?: string;
+    slug?: string;
     type: 'article' | 'video';
     description?: string;
 }) => {
