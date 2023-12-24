@@ -8,6 +8,7 @@ import * as path from 'path';
 import { articles } from './data/articles';
 import { videos } from './data/videos';
 import { quizzes } from './data/quizzes';
+import { Resolvers } from './generated/graphqlTypes';
 
 // Schema
 // ------
@@ -20,7 +21,7 @@ const typeDefs = gql(
 
 // Resolvers
 // ---------
-const resolvers = {
+const resolvers: Resolvers = {
     Query: {
         articles: () => articles,
         article: (_, { id, slug }) => {

@@ -6,6 +6,7 @@ import * as fs from 'fs';
 import gql from 'graphql-tag';
 import * as path from 'path';
 import { GraphQLError } from 'graphql/error';
+import { Resolvers } from './generated/graphqlTypes';
 
 // Schema
 // ------
@@ -17,12 +18,19 @@ const typeDefs = gql(
 
 // Resolvers
 // ---------
-const resolvers = {
+const resolvers: Resolvers = {
     Mutation: {
         login: async (_, { username, password }) => {
             try {
                 const { accessToken, user } = await login(username, password);
-                return { accessToken, user, success: true };
+                return {
+                    accessToken,
+                    user: {
+                        ...user,
+                        id: user.id.toString(),
+                    },
+                    success: true,
+                };
             } catch (error) {
                 throw new GraphQLError(error.message);
             }
