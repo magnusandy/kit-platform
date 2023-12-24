@@ -4,8 +4,12 @@
     "sourceRoot": "apps/services/content/src",
     "projectType": "application",
     "targets": {
+        "codegen": {
+            "command": "graphql-codegen --config apps/services/content/codegen.ts"
+        },
         "build": {
             "executor": "@nrwl/webpack:webpack",
+            "dependsOn": ["codegen"],
             "outputs": ["{options.outputPath}"],
             "options": {
                 "target": "node",

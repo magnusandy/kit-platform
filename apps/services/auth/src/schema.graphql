@@ -20,3 +20,7 @@ type User {
 type Mutation {
     login(username: String!, password: String!): LoginResponse!
 }
+
+type Query {
+    _: Int
+}
