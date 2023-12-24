@@ -6,14 +6,17 @@
         "start": "nx run-many --target=serve --projects=client,services-auth,services-content,services-progress",
         "start:client": "nx run-many --target=serve --projects=client",
         "start:gateway": "nx run gateway:serve",
+        "codegen": "nx run-many --target=codegen --all",
         "lint": "nx run-many --target=lint --all",
         "test": "nx run-many --target=test --all --output-style=static --detectOpenHandles",
         "test:coverage": "nx run-many --target=test --all --output-style=static  --codeCoverage=true --coverageReporters=text,html",
-        "start:db": "docker-compose -f database-compose.yml up -d"
+        "start:db": "docker-compose -f database-compose.yml up -d",
+        "codegen": "graphql-codegen --config apps/services/progress/codegen.ts"
     },
     "private": true,
     "devDependencies": {
         "@apollo/rover": "0.18.1",
+        "@graphql-codegen/cli": "5.0.0",
         "@nrwl/eslint-plugin-nx": "15.7.2",
         "@nrwl/express": "15.7.2",
         "@nrwl/jest": "15.7.2",
@@ -39,8 +42,11 @@
         "prettier": "2.8.1",
         "ts-jest": "28.0.5",
         "ts-node": "10.9.1",
-        "typescript": "4.8.2",
-        "vite-tsconfig-paths": "^4.2.1"
+        "typescript": "^4.8.2",
+        "vite-tsconfig-paths": "^4.2.1",
+        "@graphql-codegen/typescript-resolvers": "4.0.1",
+        "@graphql-codegen/typescript": "4.0.1",
+        "@graphql-codegen/introspection": "4.0.0"
     },
     "dependencies": {
         "@apollo/client": "^3.8.7",

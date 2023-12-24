@@ -18,6 +18,10 @@ import {
     ProgressPostgresRepository,
     UserProgressRecord,
 } from '../../../../libs/progress/src/infrastructure/progress.postgres.repository';
+import {
+    Resolvers,
+    UserProgressData as UserProgressDataDTO,
+} from './generated/graphqlTypes';
 
 type ProgressLoader = DataLoader<UserProgressId, UserProgressData>;
 type Context = {
@@ -50,10 +54,9 @@ export const ProgressDatasource = new DataSource({
 
 // Resolvers
 // ---------
-const resolvers = {
+const resolvers: Resolvers<Context> = {
     Query: {
-        userProgress: async (_, { userId, contentId }, _context) => {
-            const context = _context as Context;
+        userProgress: async (_, { userId, contentId }, context) => {
             const userProgress = await context.progressLoader.load({
                 userId,
                 contentId,
@@ -62,8 +65,7 @@ const resolvers = {
         },
     },
     Mutation: {
-        saveProgress: async (_, { input }, _context) => {
-            const context = _context as Context;
+        saveProgress: async (_, { input }, context) => {
             const {
                 userId,
                 contentId,
@@ -161,7 +163,9 @@ function createProgressLoader(service: UserProgressService): ProgressLoader {
 
 //ideally there is some type generation of the graphql types so that we can avoid the any here
 // i like to have a clear seperation between the domain objects and the schema objects, often they will differ in shape
-function userProgressDataToSchema(userProgress: UserProgressData): any {
+function userProgressDataToSchema(
+    userProgress: UserProgressData
+): UserProgressDataDTO {
     return {
         userId: userProgress.userId,
         contentId: userProgress.contentId,
