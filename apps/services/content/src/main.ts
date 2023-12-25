@@ -8,6 +8,7 @@ import {
     ApolloFederationDriverConfig,
 } from '@nestjs/apollo';
 import { NestFactory } from '@nestjs/core';
+import { Article } from './generated/graphqlTypes';
 
 @Resolver('Article')
 class ArticleResolver {
@@ -15,14 +16,14 @@ class ArticleResolver {
     getArticle(
         @Args('id') id: string | undefined,
         @Args('slug') slug: string | undefined
-    ) {
+    ): Article | undefined {
         return articles.find(
             (article) => article.id === id || article.slug === slug
         );
     }
 
     @Query('articles')
-    getArticles() {
+    getArticles(): Article[] {
         return articles;
     }
 }
