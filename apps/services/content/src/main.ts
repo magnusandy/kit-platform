@@ -1,14 +1,81 @@
-import { ApolloServer } from '@apollo/server';
-import { buildSubgraphSchema } from '@apollo/subgraph';
-import { startStandaloneServer } from '@apollo/server/standalone';
-import * as fs from 'fs';
-import gql from 'graphql-tag';
-import * as path from 'path';
-
 import { articles } from './data/articles';
 import { videos } from './data/videos';
 import { quizzes } from './data/quizzes';
-import { Resolvers } from './generated/graphqlTypes';
+import { Module } from '@nestjs/common';
+import { Args, GraphQLModule, Query, Resolver } from '@nestjs/graphql';
+import {
+    ApolloFederationDriver,
+    ApolloFederationDriverConfig,
+} from '@nestjs/apollo';
+import { NestFactory } from '@nestjs/core';
+
+@Resolver('Article')
+class ArticleResolver {
+    @Query('article')
+    getArticle(
+        @Args('id') id: string | undefined,
+        @Args('slug') slug: string | undefined
+    ) {
+        return articles.find(
+            (article) => article.id === id || article.slug === slug
+        );
+    }
+
+    @Query('articles')
+    getArticles() {
+        return articles;
+    }
+}
+
+@Resolver('Video')
+class VideoResolver {
+    @Query('video')
+    getVideo(
+        @Args('id') id: string | undefined,
+        @Args('slug') slug: string | undefined
+    ) {
+        return videos.find((video) => video.id === id || video.slug === slug);
+    }
+
+    @Query('videos')
+    getVideos() {
+        return videos;
+    }
+}
+
+@Resolver('Quiz')
+class QuizResolver {
+    @Query('quizById')
+    getQuizById(@Args('id') id: string | undefined) {
+        return quizzes.find((quiz) => quiz.id === id);
+    }
+
+    @Query('quizzes')
+    getQuizzes() {
+        return quizzes;
+    }
+}
+
+@Module({
+    imports: [
+        GraphQLModule.forRoot<ApolloFederationDriverConfig>({
+            driver: ApolloFederationDriver,
+            typePaths: ['./dist/apps/services/content/schema.graphql'],
+            path: '/',
+        }),
+    ],
+    controllers: [],
+    providers: [ArticleResolver, VideoResolver, QuizResolver],
+})
+class ContentModule {}
+
+async function bootstrap() {
+    const app = await NestFactory.create(ContentModule);
+    await app.listen(6110);
+}
+bootstrap();
+
+/*
 
 // Schema
 // ------
@@ -53,3 +120,5 @@ const server = new ApolloServer({
 
     console.log('Content server ready at:', url);
 })();
+
+ */
