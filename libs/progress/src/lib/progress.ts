@@ -1,4 +1,6 @@
 //Personally I like using classes for domain objects because its easier to add helper methods and keep things orgaanized
+import { Inject, Injectable } from '@nestjs/common';
+
 export class UserProgressData {
     constructor(
         public readonly userId: string,
@@ -23,6 +25,8 @@ export type UserProgressDataUpdates = Partial<
     Omit<UserProgressData, 'userId' | 'contentId'>
 >;
 
+export const UserProgressRepositoryName = 'UserProgressRepository';
+
 //utilizing interfaces allows for easier testing and mocking in tests
 export interface UserProgressRepository {
     save(userProgressData: UserProgressData): Promise<void>;
@@ -30,8 +34,10 @@ export interface UserProgressRepository {
     loadByIds(ids: UserProgressId[]): Promise<UserProgressData[]>;
 }
 
+@Injectable()
 export class UserProgressService {
     constructor(
+        @Inject(UserProgressRepositoryName)
         private readonly userProgressRepository: UserProgressRepository
     ) {}
 

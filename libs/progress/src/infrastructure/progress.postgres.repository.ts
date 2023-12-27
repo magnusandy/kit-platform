@@ -2,8 +2,10 @@ import {
     UserProgressData,
     UserProgressId,
     UserProgressRepository,
+    UserProgressRepositoryName,
 } from '../lib/progress';
 import { Brackets, Column, DataSource, Entity, PrimaryColumn } from 'typeorm';
+import { Injectable } from '@nestjs/common';
 
 @Entity()
 export class UserProgressRecord {
@@ -23,8 +25,16 @@ export class UserProgressRecord {
     isBookmarked: boolean;
 }
 
+@Injectable()
 export class ProgressPostgresRepository implements UserProgressRepository {
     constructor(private readonly datasource: DataSource) {}
+
+    public static Provider() {
+        return {
+            provide: UserProgressRepositoryName,
+            useClass: ProgressPostgresRepository,
+        };
+    }
 
     async save(userProgressData: UserProgressData): Promise<void> {
         await this.datasource

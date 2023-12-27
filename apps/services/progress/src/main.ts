@@ -5,23 +5,27 @@ import * as fs from 'fs';
 import gql from 'graphql-tag';
 import * as path from 'path';
 import {
+    ProgressPostgresRepository,
     UserProgressData,
     UserProgressDataUpdates,
     UserProgressId,
+    UserProgressRecord,
     UserProgressService,
-} from '../../../../libs/progress/src';
+} from '@kit-platform/progress';
 import DataLoader from 'dataloader';
 import { verifyAccessToProgress } from '@kit-platform/user-access';
 import { GraphQLError } from 'graphql/error';
 import { DataSource } from 'typeorm';
-import {
-    ProgressPostgresRepository,
-    UserProgressRecord,
-} from '../../../../libs/progress/src/infrastructure/progress.postgres.repository';
-import {
-    Resolvers,
-    UserProgressData as UserProgressDataDTO,
-} from './generated/graphqlTypes';
+import { Resolvers } from './generated/graphqlTypes';
+import { userProgressDataToSchema } from './api/mappers';
+import { NestFactory } from '@nestjs/core';
+import { ProgressModule } from './generated/module';
+
+async function start() {
+    const app = await NestFactory.create(ProgressModule);
+    await app.listen(6130);
+}
+start();
 
 type ProgressLoader = DataLoader<UserProgressId, UserProgressData>;
 type Context = {
@@ -159,20 +163,4 @@ function createProgressLoader(service: UserProgressService): ProgressLoader {
             });
         }
     );
-}
-
-//ideally there is some type generation of the graphql types so that we can avoid the any here
-// i like to have a clear seperation between the domain objects and the schema objects, often they will differ in shape
-function userProgressDataToSchema(
-    userProgress: UserProgressData
-): UserProgressDataDTO {
-    return {
-        userId: userProgress.userId,
-        contentId: userProgress.contentId,
-        progressPercentInt: userProgress.progressPercentInt,
-        completedTimestamp: userProgress.completedDate
-            ? userProgress.completedDate.valueOf()
-            : null,
-        isBookmarked: userProgress.isBookmarked,
-    };
 }
