@@ -15,6 +15,7 @@
         "skipDefaultLibCheck": true,
         "baseUrl": ".",
         "paths": {
+            "@kit-platform/graphql": ["libs/graphql/src/index.ts"],
             "@kit-platform/user-access": ["libs/user-access/src/index.ts"]
         },
         "types": ["node"]
