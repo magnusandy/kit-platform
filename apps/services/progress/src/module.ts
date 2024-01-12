@@ -4,9 +4,14 @@ import {
     UserProgressRecord,
     UserProgressService,
 } from '@kit-platform/progress';
-import { PROGRESS_RESOLVERS } from '../api/resolvers';
-import { buildSubgraphModule } from '@kit-platform/graphql';
+import { PROGRESS_RESOLVERS } from './api/resolvers';
+import {
+    buildSubgraphModule,
+    DataLoaderInterceptor,
+} from '@kit-platform/graphql';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { PROGRESS_LOADERS } from './api/loaders';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 
 @Module({
     imports: [
@@ -27,7 +32,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
         ...PROGRESS_RESOLVERS,
         UserProgressService,
         ProgressPostgresRepository.Provider(),
-        //todo loaders
+        ...PROGRESS_LOADERS,
+        {
+            provide: APP_INTERCEPTOR,
+            useClass: DataLoaderInterceptor,
+        },
     ],
 })
 export class ProgressModule {}

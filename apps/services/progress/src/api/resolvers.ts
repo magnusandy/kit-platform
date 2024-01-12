@@ -20,6 +20,9 @@ import {
 import { verifyAccessToProgress } from '@kit-platform/user-access';
 import { GraphQLError } from 'graphql/error';
 import { userProgressDataToSchema } from './mappers';
+import { Loader } from '@kit-platform/graphql';
+import DataLoader from 'dataloader';
+import { UserProgressDataLoader } from './loaders';
 
 @Resolver('Content')
 class ContentResolver {
@@ -28,23 +31,14 @@ class ContentResolver {
         private readonly progressService: UserProgressService
     ) {}
 
-    private async findById(
-        id: UserProgressId
-    ): Promise<UserProgressDataDTO | undefined> {
-        const found = await this.progressService.loadByIds([id]);
-        const foundId = found.find((item) => item.matches(id));
-        return foundId ? userProgressDataToSchema(foundId) : undefined;
-    }
-
     @Query('userProgress')
     async userProgress(
         @Args('userId') userId: string,
-        @Args('contentId') contentId: string
+        @Args('contentId') contentId: string,
+        @Loader(UserProgressDataLoader)
+        progressLoader: DataLoader<UserProgressId, UserProgressDataDTO>
     ): Promise<UserProgressDataDTO> {
-        return this.findById({
-            userId,
-            contentId,
-        });
+        return progressLoader.load({ userId, contentId });
     }
 
     @Mutation('saveProgress')
@@ -80,16 +74,15 @@ class ContentResolver {
     async progress(
         @Parent() content: Content,
         @Args('userId') userId: string,
-        @Headers('authorization') authToken: string | undefined
+        @Headers('authorization') authToken: string | undefined,
+        @Loader(UserProgressDataLoader)
+        progressLoader: DataLoader<UserProgressId, UserProgressDataDTO>
     ): Promise<Content['progress']> {
         const canAccess = await verifyAccessToProgress(authToken, userId);
         if (!canAccess) {
             throw new GraphQLError('User does not have access to this content');
         }
-        return this.findById({
-            userId,
-            contentId: content.id,
-        });
+        return progressLoader.load({ userId, contentId: content.id });
     }
 }
 

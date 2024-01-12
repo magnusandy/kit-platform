@@ -1,9 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { NestDataLoader } from 'nestjs-dataloader';
 import { UserProgressId, UserProgressService } from '@kit-platform/progress';
 import { UserProgressData as UserProgressDataDTO } from '../generated/graphqlTypes';
 import DataLoader from 'dataloader';
 import { userProgressDataToSchema } from './mappers';
+import { NestDataLoader } from '@kit-platform/graphql';
 
 @Injectable()
 export class UserProgressDataLoader
@@ -14,7 +14,7 @@ export class UserProgressDataLoader
         private readonly progressService: UserProgressService
     ) {}
 
-    generateDataLoader(): DataLoader<UserProgressId, UserProgressDataDTO> {
+    generateDataLoader() {
         return new DataLoader<UserProgressId, UserProgressDataDTO>(
             async (ids: UserProgressId[]) => {
                 const progress = await this.progressService.loadByIds(ids);

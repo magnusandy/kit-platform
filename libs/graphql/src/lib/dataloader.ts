@@ -9,8 +9,12 @@ import {
 } from '@nestjs/common';
 import { APP_INTERCEPTOR, ContextIdFactory, ModuleRef } from '@nestjs/core';
 import { GqlExecutionContext } from '@nestjs/graphql';
-import * as DataLoader from 'dataloader';
 import { Observable } from 'rxjs';
+import DataLoader from 'dataloader';
+
+/*
+Code has been copied and fixed from https://github.com/krislefeber/nestjs-dataloader/blob/master/index.ts
+ */
 
 /**
  * This interface will be used to generate the initial data loader.

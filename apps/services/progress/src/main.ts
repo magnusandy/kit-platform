@@ -1,5 +1,5 @@
 import { NestFactory } from '@nestjs/core';
-import { ProgressModule } from './generated/module';
+import { ProgressModule } from './module';
 
 async function start() {
     const app = await NestFactory.create(ProgressModule);
